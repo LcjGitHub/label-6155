@@ -1,0 +1,128 @@
+[
+  {
+    "id": "tw-001",
+    "name": "宜兴紫砂壶",
+    "category": "茶壶",
+    "desc": "紫泥手工壶，适合冲泡乌龙与普洱，保温透气俱佳。",
+    "image": "/images/teaware/pot.svg"
+  },
+  {
+    "id": "tw-002",
+    "name": "白瓷盖碗",
+    "category": "盖碗",
+    "desc": "经典三才盖碗，观汤色清晰，万能冲泡器具。",
+    "image": "/images/teaware/gaiwan.svg"
+  },
+  {
+    "id": "tw-003",
+    "name": "品茗杯",
+    "category": "茶杯",
+    "desc": "小杯浅啜，聚香显韵，一席六只为宜。",
+    "image": "/images/teaware/cup.svg"
+  },
+  {
+    "id": "tw-004",
+    "name": "竹制茶盘",
+    "category": "茶盘",
+    "desc": "干湿两用储水盘，承接废水，保持桌面整洁。",
+    "image": "/images/teaware/tray.svg"
+  },
+  {
+    "id": "tw-005",
+    "name": "铜制茶则",
+    "category": "茶则",
+    "desc": "量取干茶入壶，控制投茶量，避免手触茶叶。",
+    "image": "/images/teaware/spoon.svg"
+  },
+  {
+    "id": "tw-006",
+    "name": "不锈钢茶针",
+    "category": "茶针",
+    "desc": "疏通壶嘴、撬开紧压茶，实用小工具。",
+    "image": "/images/teaware/needle.svg"
+  },
+  {
+    "id": "tw-007",
+    "name": "竹制茶夹",
+    "category": "茶夹",
+    "desc": "夹持茶杯烫洗或递杯，卫生且防烫。",
+    "image": "/images/teaware/tongs.svg"
+  },
+  {
+    "id": "tw-008",
+    "name": "玻璃公道杯",
+    "category": "公道杯",
+    "desc": "均匀茶汤浓度，分杯前必先过公道。",
+    "image": "/images/teaware/pitcher.svg"
+  },
+  {
+    "id": "tw-009",
+    "name": "不锈钢茶滤",
+    "category": "滤网",
+    "desc": "架于公道杯上过滤茶渣，出汤更清澈。",
+    "image": "/images/teaware/strainer.svg"
+  },
+  {
+    "id": "tw-010",
+    "name": "建水紫陶壶",
+    "category": "茶壶",
+    "desc": "云南建水紫陶，质地细腻，适合红茶与熟普。",
+    "image": "/images/teaware/pot.svg"
+  },
+  {
+    "id": "tw-011",
+    "name": "青瓷盖碗",
+    "category": "盖碗",
+    "desc": "釉色温润，散热适中，冲泡绿茶尤佳。",
+    "image": "/images/teaware/gaiwan.svg"
+  },
+  {
+    "id": "tw-012",
+    "name": "闻香杯",
+    "category": "茶杯",
+    "desc": "高身窄口，先闻后品，常用于台湾乌龙泡法。",
+    "image": "/images/teaware/cup.svg"
+  },
+  {
+    "id": "tw-013",
+    "name": "茶荷",
+    "category": "茶则",
+    "desc": "展示干茶形态，供宾客观赏后再投入茶壶。",
+    "image": "/images/teaware/spoon.svg"
+  },
+  {
+    "id": "tw-014",
+    "name": "茶巾",
+    "category": "茶具",
+    "desc": "擦拭壶身与桌面水渍，保持席面清爽。",
+    "image": "/images/teaware/cloth.svg"
+  },
+  {
+    "id": "tw-015",
+    "name": "水盂",
+    "category": "茶盘",
+    "desc": "盛放冲泡废水，干泡法必备容器。",
+    "image": "/images/teaware/bowl.svg"
+  },
+  {
+    "id": "tw-016",
+    "name": "煮水壶",
+    "category": "茶具",
+    "desc": "银壶或铁壶煮水，软水活火，激发茶香。",
+    "image": "/images/teaware/kettle.svg"
+  },
+  {
+    "id": "tw-017",
+    "name": "茶宠",
+    "category": "茶具",
+    "desc": "紫砂小摆件，浇淋养润，增添茶席趣味。",
+    "image": "/images/teaware/pet.svg"
+  },
+  {
+    "id": "tw-018",
+    "name": "建盏",
+    "category": "茶杯",
+    "desc": "宋代黑釉盏，窑变斑纹，适合品饮白茶与岩茶。",
+    "image": "/images/teaware/cup.svg"
+  }
+]

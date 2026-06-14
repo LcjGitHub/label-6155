@@ -1,0 +1,26 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'catalog',
+      component: () => import('@/pages/CatalogPage.vue'),
+      meta: { title: '茶器图鉴' },
+    },
+    {
+      path: '/session',
+      name: 'session',
+      component: () => import('@/pages/SessionPage.vue'),
+      meta: { title: '一席茶清单' },
+    },
+  ],
+})
+
+router.afterEach((to) => {
+  const title = (to.meta.title as string) ?? '茶器图鉴'
+  document.title = `${title} · 一席茶`
+})
+
+export default router

@@ -1,0 +1,100 @@
+/** 全局样式与打印友好布局 */
+
+body {
+  background: #faf8f6;
+}
+
+.app-layout {
+  min-height: 100vh;
+}
+
+/* 默认隐藏仅打印可见的元素 */
+.print-only {
+  display: none !important;
+}
+
+.print-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+    color: #3e2723;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+}
+
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 隐藏导航与交互控件 */
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .q-item .print-only {
+    display: flex !important;
+  }
+
+  .q-header,
+  .q-drawer,
+  .q-footer {
+    display: none !important;
+  }
+
+  .q-page-container {
+    padding-top: 0 !important;
+  }
+
+  .catalog-page,
+  .session-page {
+    padding: 0 !important;
+  }
+
+  /* 打印时隐藏勾选区域与摘要卡片，仅保留 print-checklist */
+  .session-page .picker-section,
+  .session-page .summary-section,
+  .session-page .selected-summary {
+    display: none !important;
+  }
+
+  .print-checklist {
+    display: block !important;
+  }
+
+  .selected-summary {
+    border: 1px solid #ccc;
+    background: #f5f5f5 !important;
+  }
+
+  .q-card,
+  .q-list {
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+  }
+
+  .q-banner {
+    box-shadow: none !important;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
+}
