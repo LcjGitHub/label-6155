@@ -152,19 +152,21 @@ function clearByCategory(category: string): void {
               <q-btn
                 color="primary"
                 icon="check_circle"
-                label="全选"
+                label="本类全选"
                 size="sm"
                 flat
                 dense
+                :aria-label="`本类全选：${group.category}`"
                 @click="selectAllByCategory(group.category)"
               />
               <q-btn
                 color="grey"
                 icon="cancel"
-                label="清空"
+                label="本类清空"
                 size="sm"
                 flat
                 dense
+                :aria-label="`本类清空：${group.category}`"
                 @click="clearByCategory(group.category)"
               />
             </div>

@@ -182,6 +182,30 @@ export const useChecklistStore = defineStore('checklist', () => {
   }
 
   /**
+   * 批量勾选指定 ID 列表的器物。
+   * @param ids - 器物 id 列表
+   */
+  function selectItems(ids: string[]): void {
+    const next = new Set(selectedIds.value)
+    for (const id of ids) {
+      next.add(id)
+    }
+    selectedIds.value = next
+  }
+
+  /**
+   * 批量取消指定 ID 列表的器物勾选。
+   * @param ids - 器物 id 列表
+   */
+  function deselectItems(ids: string[]): void {
+    const next = new Set(selectedIds.value)
+    for (const id of ids) {
+      next.delete(id)
+    }
+    selectedIds.value = next
+  }
+
+  /**
    * 判断器物是否已勾选。
    * @param id - 器物 id
    */
@@ -270,6 +294,8 @@ export const useChecklistStore = defineStore('checklist', () => {
     clearSelection,
     selectAllByCategory,
     clearByCategory,
+    selectItems,
+    deselectItems,
     applyPreset,
     saveSnapshot,
     restoreSnapshot,

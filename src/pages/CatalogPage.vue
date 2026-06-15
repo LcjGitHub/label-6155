@@ -67,23 +67,23 @@ function toggleFavorite(event: Event, id: string): void {
 }
 
 /**
- * 批量勾选指定分类下的所有器物
+ * 批量勾选当前可见的器物（仅限搜索和分类筛选后的结果）
  * @param event - 点击事件
- * @param category - 分类名称
+ * @param itemIds - 当前可见的器物 id 列表
  */
-function selectAllByCategory(event: Event, category: string): void {
+function selectVisibleItems(event: Event, itemIds: string[]): void {
   event.stopPropagation()
-  store.selectAllByCategory(category)
+  store.selectItems(itemIds)
 }
 
 /**
- * 批量取消指定分类下的所有器物勾选
+ * 批量取消当前可见的器物勾选（仅限搜索和分类筛选后的结果）
  * @param event - 点击事件
- * @param category - 分类名称
+ * @param itemIds - 当前可见的器物 id 列表
  */
-function clearByCategory(event: Event, category: string): void {
+function clearVisibleItems(event: Event, itemIds: string[]): void {
   event.stopPropagation()
-  store.clearByCategory(category)
+  store.deselectItems(itemIds)
 }
 </script>
 
@@ -158,7 +158,8 @@ function clearByCategory(event: Event, category: string): void {
             size="sm"
             flat
             dense
-            @click="selectAllByCategory($event, group.category)"
+            :aria-label="`本类全选：${group.category}`"
+            @click="selectVisibleItems($event, group.items.map(i => i.id))"
           />
           <q-btn
             color="grey"
@@ -167,7 +168,8 @@ function clearByCategory(event: Event, category: string): void {
             size="sm"
             flat
             dense
-            @click="clearByCategory($event, group.category)"
+            :aria-label="`本类清空：${group.category}`"
+            @click="clearVisibleItems($event, group.items.map(i => i.id))"
           />
         </div>
       </div>
