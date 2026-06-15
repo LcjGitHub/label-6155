@@ -4,7 +4,20 @@ import teawareData from '@/mock/teaware.json'
 import presetData from '@/mock/presets.json'
 import type { TeawareGroup, TeawareItem, TeaPreset, ChecklistSnapshot } from '@/types/teaware'
 
+const SELECTED_STORAGE_KEY = 'tea-checklist-selected'
 const SNAPSHOT_STORAGE_KEY = 'tea-checklist-snapshots'
+
+function loadSelectedFromStorage(): Set<string> {
+  try {
+    const stored = localStorage.getItem(SELECTED_STORAGE_KEY)
+    if (stored) {
+      return new Set(JSON.parse(stored))
+    }
+  } catch (e) {
+    console.warn('Failed to load selected items from localStorage', e)
+  }
+  return new Set()
+}
 
 function loadSnapshotsFromStorage(): ChecklistSnapshot[] {
   try {
@@ -27,9 +40,23 @@ function generateSnapshotId(): string {
  */
 export const useChecklistStore = defineStore('checklist', () => {
   const items = ref<TeawareItem[]>(teawareData as TeawareItem[])
-  const selectedIds = ref<Set<string>>(new Set())
+  const initialSelected = loadSelectedFromStorage()
+  const selectedIds = ref<Set<string>>(initialSelected)
+  const restoredFromStorage = ref(initialSelected.size > 0)
   const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
   const snapshots = ref<ChecklistSnapshot[]>(loadSnapshotsFromStorage())
+
+  watch(
+    selectedIds,
+    (ids) => {
+      try {
+        localStorage.setItem(SELECTED_STORAGE_KEY, JSON.stringify(Array.from(ids)))
+      } catch (e) {
+        console.warn('Failed to save selected items to localStorage', e)
+      }
+    },
+    { deep: true },
+  )
 
   watch(
     snapshots,
@@ -151,6 +178,10 @@ export const useChecklistStore = defineStore('checklist', () => {
     return true
   }
 
+  function resetRestoredFlag(): void {
+    restoredFromStorage.value = false
+  }
+
   return {
     items,
     selectedIds,
@@ -161,6 +192,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     presets,
     snapshots,
     snapshotCount,
+    restoredFromStorage,
     toggleItem,
     isSelected,
     clearSelection,
@@ -168,5 +200,6 @@ export const useChecklistStore = defineStore('checklist', () => {
     saveSnapshot,
     restoreSnapshot,
     deleteSnapshot,
+    resetRestoredFlag,
   }
 })
