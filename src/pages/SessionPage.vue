@@ -75,6 +75,48 @@ function onSessionNameUpdate(value: string | number | null): void {
     store.setSessionName('一席茶')
   }
 }
+
+/**
+ * 导出清单到剪贴板。
+ */
+async function handleExport(): Promise<void> {
+  if (store.selectedCount === 0) {
+    $q.notify({ type: 'warning', message: '清单为空，无法导出' })
+    return
+  }
+  try {
+    const text = store.exportChecklist()
+    await navigator.clipboard.writeText(text)
+    $q.notify({ type: 'positive', message: '清单已复制到剪贴板' })
+  } catch (e) {
+    console.warn('Failed to export checklist', e)
+    $q.notify({ type: 'negative', message: '导出失败，请重试' })
+  }
+}
+
+/**
+ * 导入清单。
+ */
+function handleImport(): void {
+  $q.dialog({
+    title: '导入清单',
+    prompt: {
+      model: '',
+      type: 'textarea',
+      label: '请粘贴清单内容',
+      placeholder: '将导出的清单文本粘贴到此处',
+    },
+    cancel: true,
+    persistent: true,
+  }).onOk(async (value: string) => {
+    const result = store.importChecklist(value)
+    if (result.success) {
+      $q.notify({ type: 'positive', message: result.message })
+    } else {
+      $q.notify({ type: 'negative', message: result.message })
+    }
+  })
+}
 </script>
 
 <template>
@@ -123,6 +165,21 @@ function onSessionNameUpdate(value: string | number | null): void {
           label="保存快照"
           :disable="store.selectedCount === 0"
           @click="handleSaveSnapshot"
+        />
+        <q-btn
+          flat
+          color="accent"
+          icon="file_download"
+          label="导入清单"
+          @click="handleImport"
+        />
+        <q-btn
+          flat
+          color="info"
+          icon="file_upload"
+          label="导出清单"
+          :disable="store.selectedCount === 0"
+          @click="handleExport"
         />
         <q-btn
           color="primary"

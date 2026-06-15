@@ -289,6 +289,62 @@ export const useChecklistStore = defineStore('checklist', () => {
     restoredFromStorage.value = false
   }
 
+  const EXPORT_PREFIX = 'TEA-CKLIST:'
+
+  /**
+   * 导出当前清单为可复制文本。
+   * @returns 编码后的清单文本，包含茶席名称和已选器物编号
+   */
+  function exportChecklist(): string {
+    const data = {
+      v: 1,
+      n: sessionName.value,
+      ids: Array.from(selectedIds.value),
+    }
+    const json = JSON.stringify(data)
+    const base64 = btoa(unescape(encodeURIComponent(json)))
+    return EXPORT_PREFIX + base64
+  }
+
+  /**
+   * 从文本导入清单，恢复茶席名称和已选器物。
+   * @param text - 导出的清单文本
+   * @returns 是否导入成功
+   */
+  function importChecklist(text: string): { success: boolean; message: string } {
+    try {
+      const trimmed = text.trim()
+      if (!trimmed.startsWith(EXPORT_PREFIX)) {
+        return { success: false, message: '无效的清单格式' }
+      }
+      const base64 = trimmed.slice(EXPORT_PREFIX.length)
+      const json = decodeURIComponent(escape(atob(base64)))
+      const data = JSON.parse(json) as { v: number; n: string; ids: string[] }
+
+      if (data.v !== 1) {
+        return { success: false, message: '不支持的清单版本' }
+      }
+      if (!Array.isArray(data.ids)) {
+        return { success: false, message: '清单数据格式错误' }
+      }
+
+      const validIds = data.ids.filter((id) => items.value.some((item) => item.id === id))
+      selectedIds.value = new Set(validIds)
+
+      if (typeof data.n === 'string' && data.n.trim() !== '') {
+        sessionName.value = data.n
+      }
+
+      return {
+        success: true,
+        message: `已恢复 ${validIds.length} 件器物${data.n ? `，茶席名称：${data.n}` : ''}`,
+      }
+    } catch (e) {
+      console.warn('Failed to import checklist', e)
+      return { success: false, message: '清单解析失败，请检查内容是否正确' }
+    }
+  }
+
   return {
     items,
     selectedIds,
@@ -318,5 +374,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     filterItemsByKeyword,
     setSearchKeyword,
     setSessionName,
+    exportChecklist,
+    importChecklist,
   }
 })
