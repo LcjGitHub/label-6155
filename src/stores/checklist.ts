@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import teawareData from '@/mock/teaware.json'
 import presetData from '@/mock/presets.json'
-import type { TeawareItem, TeaPreset, ChecklistSnapshot } from '@/types/teaware'
+import type { TeawareItem, TeaPreset, ChecklistSnapshot, TeawareGroup } from '@/types/teaware'
 import { groupItemsByCategory } from '@/utils/teaware'
 
 const SELECTED_STORAGE_KEY = 'tea-checklist-selected'
@@ -60,6 +60,7 @@ export const useChecklistStore = defineStore('checklist', () => {
   const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
   const snapshots = ref<ChecklistSnapshot[]>(loadSnapshotsFromStorage())
   const searchKeyword = ref('')
+  const sortBy = ref<'category' | 'name'>('category')
   const sessionName = ref(loadSessionNameFromStorage())
 
   watch(
@@ -130,10 +131,25 @@ export const useChecklistStore = defineStore('checklist', () => {
   }
 
   /**
+   * 对分组后的器物列表进行排序。
+   * @param groups - 分组后的器物列表
+   */
+  function sortGroups(groups: TeawareGroup[]): TeawareGroup[] {
+    const sortedGroups = [...groups].sort((a, b) => a.category.localeCompare(b.category, 'zh-CN'))
+    if (sortBy.value === 'name') {
+      return sortedGroups.map((group) => ({
+        ...group,
+        items: [...group.items].sort((a, b) => a.name.localeCompare(b.name, 'zh-CN')),
+      }))
+    }
+    return sortedGroups
+  }
+
+  /**
    * 按关键词过滤并按分类分组的器物列表。
    */
   const groupedItemsByKeyword = computed(() =>
-    groupItemsByCategory(filterItemsByKeyword(searchKeyword.value)),
+    sortGroups(groupItemsByCategory(filterItemsByKeyword(searchKeyword.value))),
   )
 
   /**
@@ -142,6 +158,14 @@ export const useChecklistStore = defineStore('checklist', () => {
    */
   function setSearchKeyword(keyword: string): void {
     searchKeyword.value = keyword
+  }
+
+  /**
+   * 设置排序方式。
+   * @param sortType - 排序方式：'category' 按分类正序，'name' 按名称正序
+   */
+  function setSortBy(sortType: 'category' | 'name'): void {
+    sortBy.value = sortType
   }
 
   /**
@@ -357,6 +381,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     snapshotCount,
     restoredFromStorage,
     searchKeyword,
+    sortBy,
     sessionName,
     groupedItemsByKeyword,
     toggleItem,
@@ -373,6 +398,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     resetRestoredFlag,
     filterItemsByKeyword,
     setSearchKeyword,
+    setSortBy,
     setSessionName,
     exportChecklist,
     importChecklist,

@@ -3,12 +3,19 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useChecklistStore } from '@/stores/checklist'
 import { useFavoritesStore } from '@/stores/favorites'
+import type { TeawareItem } from '@/types/teaware'
 
 const router = useRouter()
 const store = useChecklistStore()
 const favoritesStore = useFavoritesStore()
 
 const activeCategory = ref('')
+const sortByValue = ref(store.sortBy)
+
+const sortOptions = [
+  { label: '按分类正序', value: 'category' },
+  { label: '按名称正序', value: 'name' },
+]
 
 const filteredGroups = computed(() => {
   if (!activeCategory.value) {
@@ -29,6 +36,14 @@ const hasNoResults = computed(
  */
 function setCategory(category: string): void {
   activeCategory.value = category
+}
+
+/**
+ * 处理排序方式变更
+ * @param value - 排序方式值
+ */
+function handleSortChange(value: 'category' | 'name'): void {
+  store.setSortBy(value)
 }
 
 /** 前往清单页勾选 */
@@ -93,6 +108,14 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
 function toggleItemSelection(id: string): void {
   store.toggleItem(id)
 }
+
+/**
+ * 获取器物列表的 id 数组
+ * @param items - 器物列表
+ */
+function getItemIds(items: TeawareItem[]): string[] {
+  return items.map((item) => item.id)
+}
 </script>
 
 <template>
@@ -152,6 +175,16 @@ function toggleItemSelection(id: string): void {
           <q-icon name="search" />
         </template>
       </q-input>
+      <q-select
+        v-model="sortByValue"
+        dense
+        outlined
+        :options="sortOptions"
+        label="排序方式"
+        aria-label="排序方式"
+        class="sort-select"
+        @update:model-value="handleSortChange"
+      />
     </div>
 
     <div class="category-filter q-mb-lg no-print">
@@ -191,7 +224,7 @@ function toggleItemSelection(id: string): void {
             flat
             dense
             :aria-label="`本类全选：${group.category}`"
-            @click="selectVisibleItems($event, group.items.map(i => i.id))"
+            @click="selectVisibleItems($event, getItemIds(group.items))"
           />
           <q-btn
             color="grey"
@@ -201,7 +234,7 @@ function toggleItemSelection(id: string): void {
             flat
             dense
             :aria-label="`本类清空：${group.category}`"
-            @click="clearVisibleItems($event, group.items.map(i => i.id))"
+            @click="clearVisibleItems($event, getItemIds(group.items))"
           />
         </div>
       </div>
@@ -282,8 +315,17 @@ function toggleItemSelection(id: string): void {
 }
 
 .search-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+
   .search-input {
     max-width: 420px;
+  }
+
+  .sort-select {
+    max-width: 180px;
   }
 }
 
