@@ -41,6 +41,19 @@ function handleClear(): void {
     $q.notify({ type: 'info', message: '收藏已清空' })
   })
 }
+
+function handleAddAllToChecklist(): void {
+  if (favoritesStore.favoriteCount === 0) {
+    return
+  }
+  const addedCount = favoritesStore.addAllToChecklist()
+  if (addedCount > 0) {
+    $q.notify({ type: 'positive', message: `已加入 ${addedCount} 件器物到清单` })
+  } else {
+    $q.notify({ type: 'info', message: '所有收藏的器物已在清单中' })
+  }
+  router.push({ name: 'session' })
+}
 </script>
 
 <template>
@@ -52,15 +65,24 @@ function handleClear(): void {
           收藏你喜爱的茶器，随时回顾与欣赏。
         </p>
       </div>
-      <q-btn
-        v-if="favoritesStore.favoriteCount > 0"
-        color="grey"
-        icon="delete_sweep"
-        label="清空收藏"
-        flat
-        class="no-print"
-        @click="handleClear"
-      />
+      <div class="header-actions no-print">
+        <q-btn
+          v-if="favoritesStore.favoriteCount > 0"
+          color="primary"
+          icon="playlist_add"
+          label="全部加入清单"
+          class="q-mr-sm"
+          @click="handleAddAllToChecklist"
+        />
+        <q-btn
+          v-if="favoritesStore.favoriteCount > 0"
+          color="grey"
+          icon="delete_sweep"
+          label="清空收藏"
+          flat
+          @click="handleClear"
+        />
+      </div>
     </div>
 
     <div v-if="favoritesStore.favoriteCount === 0" class="empty-state q-py-xl">
@@ -125,6 +147,12 @@ function handleClear(): void {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .page-title {

@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import teawareData from '@/mock/teaware.json'
 import type { TeawareItem } from '@/types/teaware'
 import { groupItemsByCategory } from '@/utils/teaware'
+import { useChecklistStore } from '@/stores/checklist'
 
 const STORAGE_KEY = 'tea-favorites'
 
@@ -60,6 +61,17 @@ export const useFavoritesStore = defineStore('favorites', () => {
     favoriteIds.value = new Set()
   }
 
+  function addAllToChecklist(): number {
+    const checklistStore = useChecklistStore()
+    const currentSelected = checklistStore.selectedIds
+    const newIds = Array.from(favoriteIds.value).filter((id) => !currentSelected.has(id))
+    const addedCount = newIds.length
+    if (addedCount > 0) {
+      checklistStore.selectItems(newIds)
+    }
+    return addedCount
+  }
+
   return {
     favoriteIds,
     favoriteCount,
@@ -68,5 +80,6 @@ export const useFavoritesStore = defineStore('favorites', () => {
     toggleFavorite,
     isFavorite,
     clearFavorites,
+    addAllToChecklist,
   }
 })
