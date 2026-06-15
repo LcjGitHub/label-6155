@@ -24,7 +24,22 @@ function formatNames(names: string[], max: number = 3): string {
   if (names.length <= max) {
     return names.join('、')
   }
-  return `${names.slice(0, max).join('、')}等${names.length}件`
+  const remaining = names.length - max
+  return `${names.slice(0, max).join('、')}等${remaining}件`
+}
+
+function getSnapshotAriaLabel(snapshot: ChecklistSnapshot): string {
+  const time = formatDateTime(snapshot.timestamp)
+  const count = snapshot.teawareIds.length
+  const names = snapshot.teawareNames.join('、')
+  return `${time}保存的清单快照，共${count}件：${names}，按回车或空格键恢复此快照`
+}
+
+function handleItemKeydown(event: KeyboardEvent, snapshot: ChecklistSnapshot): void {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    handleRestore(snapshot)
+  }
 }
 
 function goToSession(): void {
@@ -76,7 +91,7 @@ function handleDelete(snapshot: ChecklistSnapshot, event: Event): void {
     </div>
 
     <div v-if="store.snapshotCount === 0" class="empty-state q-py-xl">
-      <q-icon name="history" size="5rem" color="grey-4" />
+      <q-icon name="history" size="5rem" color="grey-4" aria-hidden="true" />
       <p class="text-grey-6 q-mt-md">还没有保存的快照</p>
       <p class="text-grey-5 text-body2 q-mt-xs">
         去<span class="text-primary cursor-pointer" @click="goToSession">清单页</span>勾选器物后保存快照吧
@@ -87,13 +102,17 @@ function handleDelete(snapshot: ChecklistSnapshot, event: Event): void {
       <q-item
         v-for="snapshot in store.snapshots"
         :key="snapshot.id"
+        tabindex="0"
+        role="button"
+        :aria-label="getSnapshotAriaLabel(snapshot)"
         clickable
         v-ripple
         class="snapshot-item"
         @click="handleRestore(snapshot)"
+        @keydown="handleItemKeydown($event, snapshot)"
       >
         <q-item-section avatar>
-          <q-avatar color="brown-2" text-color="brown-9" size="48px" icon="inventory_2" />
+          <q-avatar color="brown-2" text-color="brown-9" size="48px" icon="inventory_2" aria-hidden="true" />
         </q-item-section>
 
         <q-item-section>
@@ -113,6 +132,7 @@ function handleDelete(snapshot: ChecklistSnapshot, event: Event): void {
             icon="delete_outline"
             color="grey"
             aria-label="删除快照"
+            role="button"
             @click="handleDelete(snapshot, $event)"
           />
         </q-item-section>
@@ -151,6 +171,11 @@ function handleDelete(snapshot: ChecklistSnapshot, event: Event): void {
 
 .snapshot-item {
   min-height: 72px;
+
+  &:focus-visible {
+    outline: 2px solid #8d6e63;
+    outline-offset: 2px;
+  }
 }
 
 .snapshot-time {

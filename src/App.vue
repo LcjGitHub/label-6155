@@ -14,7 +14,7 @@ const navItems = [
   { label: '泡茶步骤', to: '/brewing', icon: 'local_cafe', badge: 0 },
   { label: '方案预设', to: '/presets', icon: 'palette', badge: 0 },
   { label: '一席茶清单', to: '/session', icon: 'checklist', badgeKey: 'checklist' },
-  { label: '快照历史', to: '/history', icon: 'history', badgeKey: 'snapshots' },
+  { label: '历史', to: '/history', icon: 'history', badgeKey: 'snapshots' },
   { label: '我的收藏', to: '/favorites', icon: 'favorite', badgeKey: 'favorites' },
 ]
 
