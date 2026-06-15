@@ -22,7 +22,6 @@ function goBack(): void {
   <q-page class="teaware-detail-page q-pa-md">
     <div class="detail-container">
       <q-btn
-        v-if="teaware"
         flat
         dense
         icon="arrow_back"

@@ -12,8 +12,13 @@ const navItems = [
   { label: '一席茶清单', to: '/session', icon: 'checklist' },
 ]
 
-/** 当前路由名称，用于高亮导航 */
-const activeRoute = computed(() => route.path)
+/** 当前路由名称，用于高亮导航；详情页归属图鉴高亮 */
+const activeRoute = computed(() => {
+  if (route.name === 'teaware-detail' || route.path.startsWith('/teaware/')) {
+    return '/'
+  }
+  return route.path
+})
 
 /**
  * 导航至指定路由。

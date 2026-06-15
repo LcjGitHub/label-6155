@@ -39,6 +39,18 @@ function goToSession(): void {
 function goToDetail(id: string): void {
   router.push({ name: 'teaware-detail', params: { id } })
 }
+
+/**
+ * 键盘事件处理：回车/空格键跳转详情页
+ * @param event - 键盘事件
+ * @param id - 器物 id
+ */
+function handleCardKeydown(event: KeyboardEvent, id: string): void {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    goToDetail(id)
+  }
+}
 </script>
 
 <template>
@@ -94,8 +106,12 @@ function goToDetail(id: string): void {
           :key="item.id"
           flat
           bordered
+          tabindex="0"
+          role="button"
+          :aria-label="`查看${item.name}详情`"
           class="teaware-card clickable-card"
           @click="goToDetail(item.id)"
+          @keydown="handleCardKeydown($event, item.id)"
         >
           <q-img :src="item.image" :ratio="4 / 3" class="teaware-image">
             <div class="absolute-bottom text-subtitle2 teaware-image-label">
@@ -176,6 +192,11 @@ function goToDetail(id: string): void {
 
 .clickable-card {
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #8d6e63;
+    outline-offset: 2px;
+  }
 }
 
 .teaware-image-label {
