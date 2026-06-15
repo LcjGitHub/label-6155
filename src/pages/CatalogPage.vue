@@ -11,14 +11,42 @@ const favoritesStore = useFavoritesStore()
 /** 当前筛选分类，空字符串表示全部 */
 const activeCategory = ref('')
 
-/** 按分类筛选后的分组列表 */
-const filteredGroups = computed(() => {
-  if (!activeCategory.value) {
-    return store.groupedItems
+/** 搜索关键词 */
+const searchKeyword = ref('')
+
+/**
+ * 按关键词过滤器物列表，匹配范围包含名称和描述。
+ */
+function filterItemsByKeyword(keyword: string, items: typeof store.items) {
+  const trimmed = keyword.trim().toLowerCase()
+  if (!trimmed) {
+    return items
   }
-  return store.groupedItems.filter(
-    (group) => group.category === activeCategory.value,
+  return items.filter(
+    (item) =>
+      item.name.toLowerCase().includes(trimmed) ||
+      item.desc.toLowerCase().includes(trimmed),
   )
+}
+
+/** 按搜索关键词和分类筛选后的分组列表 */
+const filteredGroups = computed(() => {
+  const keywordFilteredItems = filterItemsByKeyword(searchKeyword.value, store.items)
+
+  const itemsToGroup = activeCategory.value
+    ? keywordFilteredItems.filter((item) => item.category === activeCategory.value)
+    : keywordFilteredItems
+
+  const map = new Map<string, typeof itemsToGroup>()
+  for (const item of itemsToGroup) {
+    const group = map.get(item.category) ?? []
+    group.push(item)
+    map.set(item.category, group)
+  }
+  return Array.from(map.entries()).map(([category, groupItems]) => ({
+    category,
+    items: groupItems,
+  }))
 })
 
 /**
@@ -82,6 +110,22 @@ function toggleFavorite(event: Event, id: string): void {
         class="no-print"
         @click="goToSession"
       />
+    </div>
+
+    <div class="search-container q-mb-md no-print">
+      <q-input
+        v-model="searchKeyword"
+        filled
+        dense
+        outlined
+        placeholder="搜索茶器名称或描述..."
+        clearable
+        class="search-input"
+      >
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </div>
 
     <div class="category-filter q-mb-lg no-print">
@@ -180,6 +224,12 @@ function toggleFavorite(event: Event, id: string): void {
 .page-subtitle {
   max-width: 640px;
   line-height: 1.6;
+}
+
+.search-container {
+  .search-input {
+    max-width: 420px;
+  }
 }
 
 .category-filter {

@@ -45,6 +45,7 @@ export const useChecklistStore = defineStore('checklist', () => {
   const restoredFromStorage = ref(initialSelected.size > 0)
   const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
   const snapshots = ref<ChecklistSnapshot[]>(loadSnapshotsFromStorage())
+  const searchKeyword = ref('')
 
   watch(
     selectedIds,
@@ -96,6 +97,47 @@ export const useChecklistStore = defineStore('checklist', () => {
   const categories = computed(() =>
     Array.from(new Set(items.value.map((item) => item.category))),
   )
+
+  /**
+   * 按关键词过滤器物列表，匹配范围包含名称和描述。
+   * @param keyword - 搜索关键词，为空时返回全部器物
+   */
+  function filterItemsByKeyword(keyword: string): TeawareItem[] {
+    const trimmed = keyword.trim().toLowerCase()
+    if (!trimmed) {
+      return items.value
+    }
+    return items.value.filter(
+      (item) =>
+        item.name.toLowerCase().includes(trimmed) ||
+        item.desc.toLowerCase().includes(trimmed),
+    )
+  }
+
+  /**
+   * 按关键词过滤并按分类分组的器物列表。
+   */
+  const groupedItemsByKeyword = computed<TeawareGroup[]>(() => {
+    const filteredItems = filterItemsByKeyword(searchKeyword.value)
+    const map = new Map<string, TeawareItem[]>()
+    for (const item of filteredItems) {
+      const group = map.get(item.category) ?? []
+      group.push(item)
+      map.set(item.category, group)
+    }
+    return Array.from(map.entries()).map(([category, groupItems]) => ({
+      category,
+      items: groupItems,
+    }))
+  })
+
+  /**
+   * 设置搜索关键词。
+   * @param keyword - 搜索关键词
+   */
+  function setSearchKeyword(keyword: string): void {
+    searchKeyword.value = keyword
+  }
 
   /**
    * 切换单个器物的勾选状态。
@@ -193,6 +235,8 @@ export const useChecklistStore = defineStore('checklist', () => {
     snapshots,
     snapshotCount,
     restoredFromStorage,
+    searchKeyword,
+    groupedItemsByKeyword,
     toggleItem,
     isSelected,
     clearSelection,
@@ -201,5 +245,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     restoreSnapshot,
     deleteSnapshot,
     resetRestoredFlag,
+    filterItemsByKeyword,
+    setSearchKeyword,
   }
 })
