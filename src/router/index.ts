@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { title: '方案预设' },
     },
     {
+      path: '/scale-estimation',
+      name: 'scale-estimation',
+      component: () => import('@/pages/ScaleEstimationPage.vue'),
+      meta: { title: '规模估算' },
+    },
+    {
       path: '/brewing',
       name: 'brewing',
       component: () => import('@/pages/BrewingStepsPage.vue'),
