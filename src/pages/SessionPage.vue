@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useChecklistStore } from '@/stores/checklist'
 
 const $q = useQuasar()
 const store = useChecklistStore()
+
+onMounted(() => {
+  if (store.restoredFromStorage) {
+    $q.notify({ type: 'info', message: '已恢复上次勾选' })
+    store.resetRestoredFlag()
+  }
+})
 
 /**
  * 触发浏览器打印。

@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
 import { useChecklistStore } from '@/stores/checklist'
 import { useFavoritesStore } from '@/stores/favorites'
 
 const router = useRouter()
-const $q = useQuasar()
 const store = useChecklistStore()
 const favoritesStore = useFavoritesStore()
-
-onMounted(() => {
-  if (store.restoredFromStorage) {
-    $q.notify({ type: 'info', message: '已恢复上次勾选' })
-    store.resetRestoredFlag()
-  }
-})
 
 /** 当前筛选分类，空字符串表示全部 */
 const activeCategory = ref('')
