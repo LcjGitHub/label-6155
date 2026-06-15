@@ -35,21 +35,24 @@ function navigate(path: string): void {
 
 <template>
   <q-layout view="lHh Lpr lFf" class="app-layout">
-    <q-header elevated class="bg-primary text-white no-print">
-      <q-toolbar>
-        <q-toolbar-title class="text-weight-medium">
+    <q-header elevated class="bg-primary text-white no-print app-header">
+      <q-toolbar class="app-toolbar">
+        <q-toolbar-title class="text-weight-medium app-title">
           茶器图鉴 · 一席茶
         </q-toolbar-title>
 
-        <q-btn
-          v-for="item in navItems"
-          :key="item.to"
-          flat
-          :icon="item.icon"
-          :label="item.label"
-          :class="{ 'nav-active': activeRoute === item.to }"
-          @click="navigate(item.to)"
-        />
+        <div class="nav-buttons">
+          <q-btn
+            v-for="item in navItems"
+            :key="item.to"
+            flat
+            :icon="item.icon"
+            :label="item.label"
+            :class="{ 'nav-active': activeRoute === item.to }"
+            class="nav-btn"
+            @click="navigate(item.to)"
+          />
+        </div>
 
         <q-badge
           v-if="store.selectedCount > 0"
@@ -69,6 +72,27 @@ function navigate(path: string): void {
 </template>
 
 <style scoped lang="scss">
+.app-toolbar {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.app-title {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 1;
+}
+
+.nav-btn {
+  padding: 0 8px;
+  min-height: 36px;
+}
+
 .nav-active {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
@@ -77,5 +101,39 @@ function navigate(path: string): void {
 .selected-badge {
   top: 8px;
   right: 8px;
+}
+
+@media (max-width: 768px) {
+  .app-toolbar {
+    padding: 8px;
+  }
+
+  .app-title {
+    font-size: 1rem;
+  }
+
+  .nav-btn {
+    padding: 0 6px;
+    font-size: 0.875rem;
+
+    .q-icon {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 0.9rem;
+  }
+
+  .nav-btn {
+    padding: 0 4px;
+    font-size: 0.8rem;
+  }
+
+  .nav-buttons {
+    gap: 0;
+  }
 }
 </style>

@@ -6,6 +6,10 @@ import type { BrewingStep } from '@/types/brewing'
 const steps = computed<BrewingStep[]>(() => {
   return [...brewingSteps].sort((a, b) => a.order - b.order)
 })
+
+function getStepAriaLabel(step: BrewingStep): string {
+  return `第${step.order}步，${step.title}。${step.description}`
+}
 </script>
 
 <template>
@@ -14,32 +18,33 @@ const steps = computed<BrewingStep[]>(() => {
       <div>
         <h1 class="page-title q-ma-none">泡茶步骤</h1>
         <p class="page-subtitle q-ma-none q-mt-xs text-grey-7">
-          循序渐进，感受传统茶艺之美，七步泡出一壶好茶。
+          循序渐进，感受传统茶艺之美，{{ steps.length }}步泡出一壶好茶。
         </p>
       </div>
     </div>
 
-    <div class="steps-container">
-      <div
+    <ol class="steps-container" aria-label="泡茶步骤列表">
+      <li
         v-for="step in steps"
         :key="step.id"
         class="step-item"
+        :aria-label="getStepAriaLabel(step)"
       >
-        <div class="step-number">
+        <div class="step-number" aria-hidden="true">
           {{ step.order }}
         </div>
         <div class="step-content">
           <q-card flat bordered class="step-card">
             <q-card-section>
-              <div class="step-title text-h6">{{ step.title }}</div>
-              <div class="step-desc text-body1 text-grey-7 q-mt-sm">
+              <h2 class="step-title text-h6 q-ma-none">{{ step.title }}</h2>
+              <p class="step-desc text-body1 text-grey-7 q-mt-sm q-ma-none">
                 {{ step.description }}
-              </div>
+              </p>
             </q-card-section>
           </q-card>
         </div>
-      </div>
-    </div>
+      </li>
+    </ol>
   </q-page>
 </template>
 
@@ -69,6 +74,8 @@ const steps = computed<BrewingStep[]>(() => {
   gap: 16px;
   max-width: 720px;
   margin: 0 auto;
+  list-style: none;
+  padding: 0;
 }
 
 .step-item {
