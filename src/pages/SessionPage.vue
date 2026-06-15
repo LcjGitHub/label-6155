@@ -69,6 +69,24 @@ function clearByCategory(category: string): void {
 
 <template>
   <q-page class="session-page q-pa-md">
+    <!-- 茶席名称输入：打印时隐藏 -->
+    <div class="session-name-input q-mb-md no-print">
+      <q-input
+        v-model="store.sessionName"
+        filled
+        dense
+        label="茶席名称"
+        placeholder="请输入茶席名称"
+        maxlength="30"
+        counter
+        class="session-name-field"
+      >
+        <template v-slot:prepend>
+          <q-icon name="label" />
+        </template>
+      </q-input>
+    </div>
+
     <!-- 操作栏：打印时隐藏 -->
     <div class="session-toolbar q-mb-md no-print">
       <div>
@@ -108,8 +126,8 @@ function clearByCategory(category: string): void {
     <!-- 打印专用清单：仅打印时显示已选器物 -->
     <section class="print-checklist print-only">
       <div class="print-header">
-        <h1>一席茶 · 器物清单</h1>
-        <p>共 {{ store.selectedCount }} 件 · {{ new Date().toLocaleDateString('zh-CN') }}</p>
+        <h1>{{ store.sessionName || '一席茶' }} · 器物清单</h1>
+        <p>{{ new Date().toLocaleDateString('zh-CN') }} · 共 {{ store.selectedCount }} 件</p>
       </div>
       <ol v-if="store.selectedCount > 0" class="print-list">
         <li v-for="item in store.selectedItems" :key="item.id">
@@ -270,6 +288,12 @@ function clearByCategory(category: string): void {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+}
+
+.session-name-input {
+  .session-name-field {
+    max-width: 360px;
+  }
 }
 
 .toolbar-actions {

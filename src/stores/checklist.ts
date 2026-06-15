@@ -6,6 +6,7 @@ import type { TeawareGroup, TeawareItem, TeaPreset, ChecklistSnapshot } from '@/
 
 const SELECTED_STORAGE_KEY = 'tea-checklist-selected'
 const SNAPSHOT_STORAGE_KEY = 'tea-checklist-snapshots'
+const SESSION_NAME_STORAGE_KEY = 'tea-checklist-session-name'
 
 function loadSelectedFromStorage(): Set<string> {
   try {
@@ -17,6 +18,18 @@ function loadSelectedFromStorage(): Set<string> {
     console.warn('Failed to load selected items from localStorage', e)
   }
   return new Set()
+}
+
+function loadSessionNameFromStorage(): string {
+  try {
+    const stored = localStorage.getItem(SESSION_NAME_STORAGE_KEY)
+    if (stored) {
+      return stored
+    }
+  } catch (e) {
+    console.warn('Failed to load session name from localStorage', e)
+  }
+  return '一席茶'
 }
 
 function loadSnapshotsFromStorage(): ChecklistSnapshot[] {
@@ -46,6 +59,7 @@ export const useChecklistStore = defineStore('checklist', () => {
   const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
   const snapshots = ref<ChecklistSnapshot[]>(loadSnapshotsFromStorage())
   const searchKeyword = ref('')
+  const sessionName = ref(loadSessionNameFromStorage())
 
   watch(
     selectedIds,
@@ -57,6 +71,17 @@ export const useChecklistStore = defineStore('checklist', () => {
       }
     },
     { deep: true },
+  )
+
+  watch(
+    sessionName,
+    (name) => {
+      try {
+        localStorage.setItem(SESSION_NAME_STORAGE_KEY, name)
+      } catch (e) {
+        console.warn('Failed to save session name to localStorage', e)
+      }
+    },
   )
 
   watch(
@@ -272,6 +297,14 @@ export const useChecklistStore = defineStore('checklist', () => {
     return true
   }
 
+  /**
+   * 设置茶席名称。
+   * @param name - 茶席名称
+   */
+  function setSessionName(name: string): void {
+    sessionName.value = name
+  }
+
   function resetRestoredFlag(): void {
     restoredFromStorage.value = false
   }
@@ -288,6 +321,7 @@ export const useChecklistStore = defineStore('checklist', () => {
     snapshotCount,
     restoredFromStorage,
     searchKeyword,
+    sessionName,
     groupedItemsByKeyword,
     toggleItem,
     isSelected,
@@ -303,5 +337,6 @@ export const useChecklistStore = defineStore('checklist', () => {
     resetRestoredFlag,
     filterItemsByKeyword,
     setSearchKeyword,
+    setSessionName,
   }
 })
