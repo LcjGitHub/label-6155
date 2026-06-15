@@ -44,8 +44,12 @@ target/
 
 # Package / build output
 dist/
+dist-ssr/
 out/
 build/
+
+# Vite cache
+.vite/
 release/
 *.min.js
 *.min.css
