@@ -8,46 +8,20 @@ const router = useRouter()
 const store = useChecklistStore()
 const favoritesStore = useFavoritesStore()
 
-/** 当前筛选分类，空字符串表示全部 */
 const activeCategory = ref('')
 
-/** 搜索关键词 */
-const searchKeyword = ref('')
-
-/**
- * 按关键词过滤器物列表，匹配范围包含名称和描述。
- */
-function filterItemsByKeyword(keyword: string, items: typeof store.items) {
-  const trimmed = keyword.trim().toLowerCase()
-  if (!trimmed) {
-    return items
-  }
-  return items.filter(
-    (item) =>
-      item.name.toLowerCase().includes(trimmed) ||
-      item.desc.toLowerCase().includes(trimmed),
-  )
-}
-
-/** 按搜索关键词和分类筛选后的分组列表 */
 const filteredGroups = computed(() => {
-  const keywordFilteredItems = filterItemsByKeyword(searchKeyword.value, store.items)
-
-  const itemsToGroup = activeCategory.value
-    ? keywordFilteredItems.filter((item) => item.category === activeCategory.value)
-    : keywordFilteredItems
-
-  const map = new Map<string, typeof itemsToGroup>()
-  for (const item of itemsToGroup) {
-    const group = map.get(item.category) ?? []
-    group.push(item)
-    map.set(item.category, group)
+  if (!activeCategory.value) {
+    return store.groupedItemsByKeyword
   }
-  return Array.from(map.entries()).map(([category, groupItems]) => ({
-    category,
-    items: groupItems,
-  }))
+  return store.groupedItemsByKeyword.filter(
+    (group) => group.category === activeCategory.value,
+  )
 })
+
+const hasNoResults = computed(
+  () => filteredGroups.value.length === 0 && (store.searchKeyword.trim() !== '' || activeCategory.value !== ''),
+)
 
 /**
  * 设置分类筛选。
@@ -114,12 +88,12 @@ function toggleFavorite(event: Event, id: string): void {
 
     <div class="search-container q-mb-md no-print">
       <q-input
-        v-model="searchKeyword"
-        filled
+        v-model="store.searchKeyword"
         dense
         outlined
         placeholder="搜索茶器名称或描述..."
         clearable
+        aria-label="搜索茶器名称或描述"
         class="search-input"
       >
         <template v-slot:prepend>
@@ -203,6 +177,11 @@ function toggleFavorite(event: Event, id: string): void {
         </q-card>
       </div>
     </section>
+
+    <div v-if="hasNoResults" class="no-results q-pa-lg text-center text-grey-6">
+      <q-icon name="search_off" size="48px" class="q-mb-sm" />
+      <div class="text-body1">未找到匹配茶器</div>
+    </div>
   </q-page>
 </template>
 
