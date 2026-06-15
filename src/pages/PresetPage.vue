@@ -69,7 +69,8 @@ function handleCardKeydown(
         tabindex="0"
         role="button"
         :aria-label="`套用${preset.name}方案`"
-        class="preset-card"
+        class="preset-card clickable-card"
+        @click="applyPresetAndGo(preset.id, preset.name)"
         @keydown="handleCardKeydown($event, preset.id, preset.name)"
       >
         <q-img :src="preset.coverImage" :ratio="16 / 9" class="preset-cover">
@@ -89,8 +90,8 @@ function handleCardKeydown(
               v-for="item in getPresetTeaware(preset.id)"
               :key="item.id"
               size="sm"
-              :color="store.isSelected(item.id) ? 'positive' : 'grey-3'"
-              :text-color="store.isSelected(item.id) ? 'white' : 'dark'"
+              color="brown-1"
+              text-color="brown-9"
               class="no-pointer-events"
             >
               {{ item.name }}
@@ -104,7 +105,7 @@ function handleCardKeydown(
             icon="checklist"
             label="套用方案"
             unelevated
-            @click="applyPresetAndGo(preset.id, preset.name)"
+            @click.stop="applyPresetAndGo(preset.id, preset.name)"
           />
         </q-card-actions>
       </q-card>
@@ -138,6 +139,10 @@ function handleCardKeydown(
   &:hover {
     box-shadow: 0 4px 12px rgba(62, 39, 35, 0.12);
   }
+}
+
+.clickable-card {
+  cursor: pointer;
 
   &:focus-visible {
     outline: 2px solid #8d6e63;
