@@ -9,6 +9,7 @@ const store = useChecklistStore()
 
 const navItems = [
   { label: '图鉴', to: '/', icon: 'menu_book' },
+  { label: '方案预设', to: '/presets', icon: 'palette' },
   { label: '一席茶清单', to: '/session', icon: 'checklist' },
 ]
 

@@ -22,6 +22,12 @@ const router = createRouter({
       component: TeawareDetailPage,
       meta: { title: '茶器详情' },
     },
+    {
+      path: '/presets',
+      name: 'presets',
+      component: () => import('@/pages/PresetPage.vue'),
+      meta: { title: '方案预设' },
+    },
   ],
 })
 

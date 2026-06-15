@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import teawareData from '@/mock/teaware.json'
-import type { TeawareGroup, TeawareItem } from '@/types/teaware'
+import presetData from '@/mock/presets.json'
+import type { TeawareGroup, TeawareItem, TeaPreset } from '@/types/teaware'
 
 /**
  * 一席茶清单状态：勾选器物、统计数量、按分类浏览。
@@ -9,6 +10,7 @@ import type { TeawareGroup, TeawareItem } from '@/types/teaware'
 export const useChecklistStore = defineStore('checklist', () => {
   const items = ref<TeawareItem[]>(teawareData as TeawareItem[])
   const selectedIds = ref<Set<string>>(new Set())
+  const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
 
   /** 已选器物数量 */
   const selectedCount = computed(() => selectedIds.value.size)
@@ -64,6 +66,16 @@ export const useChecklistStore = defineStore('checklist', () => {
     selectedIds.value = new Set()
   }
 
+  /**
+   * 套用预设方案，将方案中的器物设为勾选状态。
+   * @param presetId - 预设方案 id
+   */
+  function applyPreset(presetId: string): void {
+    const preset = presets.value.find((p) => p.id === presetId)
+    if (!preset) return
+    selectedIds.value = new Set(preset.teawareIds)
+  }
+
   return {
     items,
     selectedIds,
@@ -71,8 +83,10 @@ export const useChecklistStore = defineStore('checklist', () => {
     selectedItems,
     groupedItems,
     categories,
+    presets,
     toggleItem,
     isSelected,
     clearSelection,
+    applyPreset,
   }
 })

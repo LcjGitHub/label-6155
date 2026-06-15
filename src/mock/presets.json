@@ -1,0 +1,23 @@
+[
+  {
+    "id": "preset-001",
+    "name": "清雅乌龙席",
+    "desc": "经典乌龙泡法，适合品鉴铁观音、大红袍等半发酵茶，茶香四溢，仪式感十足。",
+    "coverImage": "/images/teaware/pot.svg",
+    "teawareIds": ["tw-001", "tw-008", "tw-009", "tw-003", "tw-004", "tw-005", "tw-014"]
+  },
+  {
+    "id": "preset-002",
+    "name": "雅致绿茶席",
+    "desc": "清淡绿茶品鉴套餐，适合龙井、碧螺春等名优绿茶，观汤色、品清香，感受春日滋味。",
+    "coverImage": "/images/teaware/gaiwan.svg",
+    "teawareIds": ["tw-011", "tw-008", "tw-012", "tw-015", "tw-005", "tw-014", "tw-017"]
+  },
+  {
+    "id": "preset-003",
+    "name": "古韵普洱席",
+    "desc": "陈年普洱专用搭配，适合熟普、生普等紧压茶，煮水醒茶，品味岁月沉淀的茶香。",
+    "coverImage": "/images/teaware/kettle.svg",
+    "teawareIds": ["tw-010", "tw-008", "tw-009", "tw-018", "tw-004", "tw-006", "tw-016", "tw-014"]
+  }
+]

@@ -12,3 +12,12 @@ export interface TeawareGroup {
   category: string
   items: TeawareItem[]
 }
+
+/** 茶席方案预设 */
+export interface TeaPreset {
+  id: string
+  name: string
+  desc: string
+  coverImage: string
+  teawareIds: string[]
+}
