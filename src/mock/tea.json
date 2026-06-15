@@ -1,0 +1,74 @@
+[
+  {
+    "id": "tea-001",
+    "name": "西湖龙井",
+    "category": "绿茶",
+    "origin": "浙江杭州",
+    "desc": "中国十大名茶之首，扁平光滑，色泽翠绿，香气清高持久，滋味鲜醇甘爽。",
+    "image": "/images/tea/longjing.svg"
+  },
+  {
+    "id": "tea-002",
+    "name": "洞庭碧螺春",
+    "category": "绿茶",
+    "origin": "江苏苏州",
+    "desc": "条索纤细，卷曲成螺，满披茸毛，冲泡后香气浓郁，滋味鲜爽生津。",
+    "image": "/images/tea/biluochun.svg"
+  },
+  {
+    "id": "tea-003",
+    "name": "祁门红茶",
+    "category": "红茶",
+    "origin": "安徽祁门",
+    "desc": "世界三大高香红茶之一，条索紧细，色泽乌润，蜜糖香中带兰花香。",
+    "image": "/images/tea/qimen.svg"
+  },
+  {
+    "id": "tea-004",
+    "name": "武夷大红袍",
+    "category": "乌龙茶",
+    "origin": "福建武夷山",
+    "desc": "岩茶之王，外形条索紧结，色泽绿褐鲜润，岩韵明显，耐冲泡。",
+    "image": "/images/tea/dahongpao.svg"
+  },
+  {
+    "id": "tea-005",
+    "name": "安溪铁观音",
+    "category": "乌龙茶",
+    "origin": "福建安溪",
+    "desc": "半发酵茶，叶体沉重如铁，形美如观音，兰花香馥郁，回甘持久。",
+    "image": "/images/tea/tieguanyin.svg"
+  },
+  {
+    "id": "tea-006",
+    "name": "白毫银针",
+    "category": "白茶",
+    "origin": "福建福鼎",
+    "desc": "白茶中的极品，芽头肥壮，满披白毫，挺直如针，汤色杏黄，毫香鲜爽。",
+    "image": "/images/tea/yinzhen.svg"
+  },
+  {
+    "id": "tea-007",
+    "name": "君山银针",
+    "category": "黄茶",
+    "origin": "湖南岳阳",
+    "desc": "黄茶之冠，芽头茁壮，内呈橙黄，冲泡后三起三落，滋味甘醇甜爽。",
+    "image": "/images/tea/junshan.svg"
+  },
+  {
+    "id": "tea-008",
+    "name": "云南普洱",
+    "category": "黑茶",
+    "origin": "云南西双版纳",
+    "desc": "后发酵茶，越陈越香，汤色红浓明亮，陈香浓郁，滋味醇厚回甘。",
+    "image": "/images/tea/puer.svg"
+  },
+  {
+    "id": "tea-009",
+    "name": "茉莉花茶",
+    "category": "花茶",
+    "origin": "福建福州",
+    "desc": "窨制花茶，以绿茶为茶坯，茉莉鲜花窨制，茶香与茉莉花香交融。",
+    "image": "/images/tea/jasmine.svg"
+  }
+]
