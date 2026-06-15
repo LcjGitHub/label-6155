@@ -65,6 +65,16 @@ function selectAllByCategory(category: string): void {
 function clearByCategory(category: string): void {
   store.clearByCategory(category)
 }
+
+/**
+ * 茶席名称输入更新回调：清空时回退为默认值「一席茶」。
+ * @param value - 当前输入值
+ */
+function onSessionNameUpdate(value: string | number | null): void {
+  if (value === null || String(value).trim() === '') {
+    store.setSessionName('一席茶')
+  }
+}
 </script>
 
 <template>
@@ -79,7 +89,9 @@ function clearByCategory(category: string): void {
         placeholder="请输入茶席名称"
         maxlength="30"
         counter
+        aria-label="茶席名称"
         class="session-name-field"
+        @update:model-value="onSessionNameUpdate"
       >
         <template v-slot:prepend>
           <q-icon name="label" />
@@ -124,7 +136,7 @@ function clearByCategory(category: string): void {
     </div>
 
     <!-- 打印专用清单：仅打印时显示已选器物 -->
-    <section class="print-checklist print-only">
+    <section class="print-checklist print-only" aria-hidden="true">
       <div class="print-header">
         <h1>{{ store.sessionName || '一席茶' }} · 器物清单</h1>
         <p>{{ new Date().toLocaleDateString('zh-CN') }} · 共 {{ store.selectedCount }} 件</p>
