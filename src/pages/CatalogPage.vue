@@ -85,6 +85,18 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
   event.stopPropagation()
   store.deselectItems(itemIds)
 }
+
+/**
+ * 切换单个器物的勾选状态
+ * @param eventOrValue - 点击事件或勾选状态值
+ * @param id - 器物 id
+ */
+function toggleItemSelection(eventOrValue: Event | boolean, id: string): void {
+  if (eventOrValue instanceof Event) {
+    eventOrValue.stopPropagation()
+  }
+  store.toggleItem(id)
+}
 </script>
 
 <template>
@@ -105,6 +117,30 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
         @click="goToSession"
       />
     </div>
+
+    <q-banner
+      v-if="store.selectedCount > 0"
+      rounded
+      class="bg-brown-1 text-brown-9 q-mb-md selected-summary no-print"
+    >
+      <template #avatar>
+        <q-icon name="inventory_2" color="brown" />
+      </template>
+      <template #action>
+        <q-btn
+          color="primary"
+          size="sm"
+          dense
+          unelevated
+          icon="arrow_forward"
+          label="前往清单"
+          @click="goToSession"
+        />
+      </template>
+      <span>
+        已选 <strong>{{ store.selectedCount }}</strong> 件器物
+      </span>
+    </q-banner>
 
     <div class="search-container q-mb-md no-print">
       <q-input
@@ -198,7 +234,16 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
             <div class="text-body2 text-grey-7 q-mt-xs">{{ item.desc }}</div>
           </q-card-section>
 
-          <q-card-actions align="right" class="no-print card-actions">
+          <q-card-actions align="between" class="no-print card-actions">
+            <q-checkbox
+              :model-value="store.isSelected(item.id)"
+              color="primary"
+              :label="store.isSelected(item.id) ? '已加入清单' : '加入清单'"
+              size="sm"
+              :aria-label="store.isSelected(item.id) ? `从清单移除${item.name}` : `将${item.name}加入清单`"
+              @update:model-value="toggleItemSelection($event, item.id)"
+              @click="toggleItemSelection($event, item.id)"
+            />
             <q-btn
               :icon="favoritesStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
               :color="favoritesStore.isFavorite(item.id) ? 'red' : 'grey'"
@@ -208,15 +253,6 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
               :aria-label="favoritesStore.isFavorite(item.id) ? '取消收藏' : '收藏'"
               @click="toggleFavorite($event, item.id)"
             />
-            <q-chip
-              v-if="store.isSelected(item.id)"
-              color="positive"
-              text-color="white"
-              icon="check"
-              size="sm"
-            >
-              已加入清单
-            </q-chip>
           </q-card-actions>
         </q-card>
       </div>
@@ -318,5 +354,23 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
 
 .teaware-image-label {
   background: rgba(62, 39, 35, 0.65);
+}
+
+.selected-summary {
+  .q-banner__content {
+    flex: 1;
+  }
+}
+
+.card-actions {
+  padding-top: 8px;
+
+  :deep(.q-checkbox) {
+    cursor: pointer;
+
+    .q-checkbox__label {
+      font-size: 0.8125rem;
+    }
+  }
 }
 </style>
