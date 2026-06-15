@@ -154,6 +154,34 @@ export const useChecklistStore = defineStore('checklist', () => {
   }
 
   /**
+   * 批量勾选指定分类下的所有器物。
+   * @param category - 分类名称
+   */
+  function selectAllByCategory(category: string): void {
+    const next = new Set(selectedIds.value)
+    for (const item of items.value) {
+      if (item.category === category) {
+        next.add(item.id)
+      }
+    }
+    selectedIds.value = next
+  }
+
+  /**
+   * 批量取消指定分类下的所有器物勾选。
+   * @param category - 分类名称
+   */
+  function clearByCategory(category: string): void {
+    const next = new Set(selectedIds.value)
+    for (const item of items.value) {
+      if (item.category === category) {
+        next.delete(item.id)
+      }
+    }
+    selectedIds.value = next
+  }
+
+  /**
    * 判断器物是否已勾选。
    * @param id - 器物 id
    */
@@ -240,6 +268,8 @@ export const useChecklistStore = defineStore('checklist', () => {
     toggleItem,
     isSelected,
     clearSelection,
+    selectAllByCategory,
+    clearByCategory,
     applyPreset,
     saveSnapshot,
     restoreSnapshot,

@@ -65,6 +65,26 @@ function toggleFavorite(event: Event, id: string): void {
   event.stopPropagation()
   favoritesStore.toggleFavorite(id)
 }
+
+/**
+ * 批量勾选指定分类下的所有器物
+ * @param event - 点击事件
+ * @param category - 分类名称
+ */
+function selectAllByCategory(event: Event, category: string): void {
+  event.stopPropagation()
+  store.selectAllByCategory(category)
+}
+
+/**
+ * 批量取消指定分类下的所有器物勾选
+ * @param event - 点击事件
+ * @param category - 分类名称
+ */
+function clearByCategory(event: Event, category: string): void {
+  event.stopPropagation()
+  store.clearByCategory(category)
+}
 </script>
 
 <template>
@@ -128,7 +148,29 @@ function toggleFavorite(event: Event, id: string): void {
       :key="group.category"
       class="category-section q-mb-xl"
     >
-      <h2 class="category-title">{{ group.category }}</h2>
+      <div class="category-header">
+        <h2 class="category-title q-ma-none">{{ group.category }}</h2>
+        <div class="category-actions no-print">
+          <q-btn
+            color="primary"
+            icon="check_circle"
+            label="本类全选"
+            size="sm"
+            flat
+            dense
+            @click="selectAllByCategory($event, group.category)"
+          />
+          <q-btn
+            color="grey"
+            icon="cancel"
+            label="本类清空"
+            size="sm"
+            flat
+            dense
+            @click="clearByCategory($event, group.category)"
+          />
+        </div>
+      </div>
 
       <div class="teaware-grid">
         <q-card
@@ -221,9 +263,32 @@ function toggleFavorite(event: Event, id: string): void {
   font-size: 1.25rem;
   font-weight: 600;
   color: #5d4037;
-  margin: 0 0 16px;
+  margin: 0;
   padding-bottom: 8px;
   border-bottom: 2px solid #d7ccc8;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #d7ccc8;
+  flex-wrap: wrap;
+
+  .category-title {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.category-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .teaware-grid {

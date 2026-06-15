@@ -49,6 +49,22 @@ function handleSaveSnapshot(): void {
     $q.notify({ type: 'warning', message: '清单为空，无法保存' })
   }
 }
+
+/**
+ * 批量勾选指定分类下的所有器物
+ * @param category - 分类名称
+ */
+function selectAllByCategory(category: string): void {
+  store.selectAllByCategory(category)
+}
+
+/**
+ * 批量取消指定分类下的所有器物勾选
+ * @param category - 分类名称
+ */
+function clearByCategory(category: string): void {
+  store.clearByCategory(category)
+}
 </script>
 
 <template>
@@ -130,7 +146,29 @@ function handleSaveSnapshot(): void {
           :key="group.category"
           class="group-block q-mb-md"
         >
-          <div class="group-label">{{ group.category }}</div>
+          <div class="group-header">
+            <div class="group-label">{{ group.category }}</div>
+            <div class="group-actions no-print">
+              <q-btn
+                color="primary"
+                icon="check_circle"
+                label="全选"
+                size="sm"
+                flat
+                dense
+                @click="selectAllByCategory(group.category)"
+              />
+              <q-btn
+                color="grey"
+                icon="cancel"
+                label="清空"
+                size="sm"
+                flat
+                dense
+                @click="clearByCategory(group.category)"
+              />
+            </div>
+          </div>
 
           <q-list bordered separator class="rounded-borders">
             <q-item
@@ -249,6 +287,25 @@ function handleSaveSnapshot(): void {
   font-weight: 600;
   color: #8d6e63;
   margin-bottom: 8px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+
+  .group-label {
+    margin-bottom: 0;
+  }
+}
+
+.group-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .session-layout {
