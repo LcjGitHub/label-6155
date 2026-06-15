@@ -14,6 +14,7 @@ const navItems = [
   { label: '保养贴士', to: '/care-tips', icon: 'tips_and_updates', badge: 0 },
   { label: '水温指引', to: '/water-guide', icon: 'thermostat', badge: 0 },
   { label: '泡茶步骤', to: '/brewing', icon: 'local_cafe', badge: 0 },
+  { label: '礼仪须知', to: '/etiquette', icon: 'self_improvement', badge: 0 },
   { label: '方案预设', to: '/presets', icon: 'palette', badge: 0 },
   { label: '一席茶清单', to: '/session', icon: 'checklist', badgeKey: 'checklist' },
   { label: '历史', to: '/history', icon: 'history', badgeKey: 'snapshots' },

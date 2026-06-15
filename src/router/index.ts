@@ -58,6 +58,12 @@ const router = createRouter({
       component: () => import('@/pages/CareTipsPage.vue'),
       meta: { title: '保养贴士' },
     },
+    {
+      path: '/etiquette',
+      name: 'etiquette',
+      component: () => import('@/pages/EtiquettePage.vue'),
+      meta: { title: '礼仪须知' },
+    },
   ],
 })
 
