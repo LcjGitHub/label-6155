@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 import { useFavoritesStore } from '@/stores/favorites'
 
 const router = useRouter()
+const $q = useQuasar()
 const favoritesStore = useFavoritesStore()
 
 function goToDetail(id: string): void {
   router.push({ name: 'teaware-detail', params: { id } })
+}
+
+function goToCatalog(): void {
+  router.push('/')
 }
 
 function handleCardKeydown(event: KeyboardEvent, id: string): void {
@@ -19,6 +25,21 @@ function handleCardKeydown(event: KeyboardEvent, id: string): void {
 function toggleFavorite(event: Event, id: string): void {
   event.stopPropagation()
   favoritesStore.toggleFavorite(id)
+}
+
+function handleClear(): void {
+  if (favoritesStore.favoriteCount === 0) {
+    return
+  }
+  $q.dialog({
+    title: '清空收藏',
+    message: '确定要清空所有已收藏的茶器吗？',
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    favoritesStore.clearFavorites()
+    $q.notify({ type: 'info', message: '收藏已清空' })
+  })
 }
 </script>
 
@@ -38,7 +59,7 @@ function toggleFavorite(event: Event, id: string): void {
         label="清空收藏"
         flat
         class="no-print"
-        @click="favoritesStore.clearFavorites()"
+        @click="handleClear"
       />
     </div>
 
@@ -46,7 +67,7 @@ function toggleFavorite(event: Event, id: string): void {
       <q-icon name="favorite_border" size="5rem" color="grey-4" />
       <p class="text-grey-6 q-mt-md">还没有收藏的茶器</p>
       <p class="text-grey-5 text-body2 q-mt-xs">
-        去<a href="/" class="text-primary">图鉴页</a>发现你喜欢的茶器吧
+        去<span class="text-primary cursor-pointer" @click="goToCatalog">图鉴页</span>发现你喜欢的茶器吧
       </p>
     </div>
 
@@ -78,7 +99,6 @@ function toggleFavorite(event: Event, id: string): void {
 
           <q-card-section>
             <div class="text-h6">{{ item.name }}</div>
-            <div class="text-body2 text-grey-7 q-mt-xs">{{ item.desc }}</div>
           </q-card-section>
 
           <q-card-actions align="right" class="no-print card-actions">
