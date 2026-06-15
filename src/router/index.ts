@@ -52,6 +52,12 @@ const router = createRouter({
       component: () => import('@/pages/HistoryPage.vue'),
       meta: { title: '快照历史' },
     },
+    {
+      path: '/care-tips',
+      name: 'care-tips',
+      component: () => import('@/pages/CareTipsPage.vue'),
+      meta: { title: '保养贴士' },
+    },
   ],
 })
 
