@@ -1,52 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useChecklistStore } from '@/stores/checklist'
 import { useFavoritesStore } from '@/stores/favorites'
 
 const router = useRouter()
-const store = useChecklistStore()
 const favoritesStore = useFavoritesStore()
 
-/** 当前筛选分类，空字符串表示全部 */
-const activeCategory = ref('')
-
-/** 按分类筛选后的分组列表 */
-const filteredGroups = computed(() => {
-  if (!activeCategory.value) {
-    return store.groupedItems
-  }
-  return store.groupedItems.filter(
-    (group) => group.category === activeCategory.value,
-  )
-})
-
-/**
- * 设置分类筛选。
- * @param category - 分类名，空字符串为全部
- */
-function setCategory(category: string): void {
-  activeCategory.value = category
-}
-
-/** 前往清单页勾选 */
-function goToSession(): void {
-  router.push('/session')
-}
-
-/**
- * 前往茶器详情页
- * @param id - 器物 id
- */
 function goToDetail(id: string): void {
   router.push({ name: 'teaware-detail', params: { id } })
 }
 
-/**
- * 键盘事件处理：回车/空格键跳转详情页
- * @param event - 键盘事件
- * @param id - 器物 id
- */
 function handleCardKeydown(event: KeyboardEvent, id: string): void {
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
@@ -54,11 +16,6 @@ function handleCardKeydown(event: KeyboardEvent, id: string): void {
   }
 }
 
-/**
- * 切换收藏状态
- * @param event - 点击事件
- * @param id - 器物 id
- */
 function toggleFavorite(event: Event, id: string): void {
   event.stopPropagation()
   favoritesStore.toggleFavorite(id)
@@ -66,47 +23,35 @@ function toggleFavorite(event: Event, id: string): void {
 </script>
 
 <template>
-  <q-page class="catalog-page q-pa-md">
+  <q-page class="favorites-page q-pa-md">
     <div class="page-header q-mb-md">
       <div>
-        <h1 class="page-title q-ma-none">茶器图鉴</h1>
+        <h1 class="page-title q-ma-none">我的收藏</h1>
         <p class="page-subtitle q-ma-none q-mt-xs text-grey-7">
-          浏览传统茶器，了解用途与分类，再前往「一席茶清单」勾选本次所需器物。
+          收藏你喜爱的茶器，随时回顾与欣赏。
         </p>
       </div>
       <q-btn
-        color="primary"
-        icon="checklist"
-        label="去勾选清单"
-        unelevated
+        v-if="favoritesStore.favoriteCount > 0"
+        color="grey"
+        icon="delete_sweep"
+        label="清空收藏"
+        flat
         class="no-print"
-        @click="goToSession"
+        @click="favoritesStore.clearFavorites()"
       />
     </div>
 
-    <div class="category-filter q-mb-lg no-print">
-      <q-chip
-        :color="activeCategory === '' ? 'primary' : 'grey-3'"
-        :text-color="activeCategory === '' ? 'white' : 'dark'"
-        clickable
-        @click="setCategory('')"
-      >
-        全部
-      </q-chip>
-      <q-chip
-        v-for="cat in store.categories"
-        :key="cat"
-        :color="activeCategory === cat ? 'primary' : 'grey-3'"
-        :text-color="activeCategory === cat ? 'white' : 'dark'"
-        clickable
-        @click="setCategory(cat)"
-      >
-        {{ cat }}
-      </q-chip>
+    <div v-if="favoritesStore.favoriteCount === 0" class="empty-state q-py-xl">
+      <q-icon name="favorite_border" size="5rem" color="grey-4" />
+      <p class="text-grey-6 q-mt-md">还没有收藏的茶器</p>
+      <p class="text-grey-5 text-body2 q-mt-xs">
+        去<a href="/" class="text-primary">图鉴页</a>发现你喜欢的茶器吧
+      </p>
     </div>
 
     <section
-      v-for="group in filteredGroups"
+      v-for="group in favoritesStore.groupedFavorites"
       :key="group.category"
       class="category-section q-mb-xl"
     >
@@ -138,23 +83,14 @@ function toggleFavorite(event: Event, id: string): void {
 
           <q-card-actions align="right" class="no-print card-actions">
             <q-btn
-              :icon="favoritesStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
-              :color="favoritesStore.isFavorite(item.id) ? 'red' : 'grey'"
+              icon="favorite"
+              color="red"
               flat
               dense
               round
-              :aria-label="favoritesStore.isFavorite(item.id) ? '取消收藏' : '收藏'"
+              aria-label="取消收藏"
               @click="toggleFavorite($event, item.id)"
             />
-            <q-chip
-              v-if="store.isSelected(item.id)"
-              color="positive"
-              text-color="white"
-              icon="check"
-              size="sm"
-            >
-              已加入清单
-            </q-chip>
           </q-card-actions>
         </q-card>
       </div>
@@ -182,10 +118,8 @@ function toggleFavorite(event: Event, id: string): void {
   line-height: 1.6;
 }
 
-.category-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.empty-state {
+  text-align: center;
 }
 
 .category-title {

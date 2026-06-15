@@ -34,6 +34,12 @@ const router = createRouter({
       component: () => import('@/pages/BrewingStepsPage.vue'),
       meta: { title: '泡茶步骤' },
     },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: () => import('@/pages/FavoritesPage.vue'),
+      meta: { title: '我的收藏' },
+    },
   ],
 })
 
