@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { title: '泡茶步骤' },
     },
     {
+      path: '/water-guide',
+      name: 'water-guide',
+      component: () => import('@/pages/WaterGuidePage.vue'),
+      meta: { title: '水温指引' },
+    },
+    {
       path: '/favorites',
       name: 'favorites',
       component: () => import('@/pages/FavoritesPage.vue'),

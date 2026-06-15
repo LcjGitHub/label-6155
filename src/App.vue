@@ -11,6 +11,7 @@ const favoritesStore = useFavoritesStore()
 
 const navItems = [
   { label: '图鉴', to: '/', icon: 'menu_book', badge: 0 },
+  { label: '水温指引', to: '/water-guide', icon: 'thermostat', badge: 0 },
   { label: '泡茶步骤', to: '/brewing', icon: 'local_cafe', badge: 0 },
   { label: '方案预设', to: '/presets', icon: 'palette', badge: 0 },
   { label: '一席茶清单', to: '/session', icon: 'checklist', badgeKey: 'checklist' },
