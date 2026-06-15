@@ -88,13 +88,9 @@ function clearVisibleItems(event: Event, itemIds: string[]): void {
 
 /**
  * 切换单个器物的勾选状态
- * @param eventOrValue - 点击事件或勾选状态值
  * @param id - 器物 id
  */
-function toggleItemSelection(eventOrValue: Event | boolean, id: string): void {
-  if (eventOrValue instanceof Event) {
-    eventOrValue.stopPropagation()
-  }
+function toggleItemSelection(id: string): void {
   store.toggleItem(id)
 }
 </script>
@@ -241,8 +237,8 @@ function toggleItemSelection(eventOrValue: Event | boolean, id: string): void {
               :label="store.isSelected(item.id) ? '已加入清单' : '加入清单'"
               size="sm"
               :aria-label="store.isSelected(item.id) ? `从清单移除${item.name}` : `将${item.name}加入清单`"
-              @update:model-value="toggleItemSelection($event, item.id)"
-              @click="toggleItemSelection($event, item.id)"
+              @update:model-value="toggleItemSelection(item.id)"
+              @click.stop
             />
             <q-btn
               :icon="favoritesStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
