@@ -21,3 +21,11 @@ export interface TeaPreset {
   coverImage: string
   teawareIds: string[]
 }
+
+/** 清单快照 */
+export interface ChecklistSnapshot {
+  id: string
+  timestamp: number
+  teawareIds: string[]
+  teawareNames: string[]
+}

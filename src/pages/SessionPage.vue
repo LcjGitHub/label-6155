@@ -29,6 +29,18 @@ function handleClear(): void {
     $q.notify({ type: 'info', message: '清单已清空' })
   })
 }
+
+/**
+ * 保存当前清单为快照。
+ */
+function handleSaveSnapshot(): void {
+  const snapshot = store.saveSnapshot()
+  if (snapshot) {
+    $q.notify({ type: 'positive', message: '快照已保存' })
+  } else {
+    $q.notify({ type: 'warning', message: '清单为空，无法保存' })
+  }
+}
 </script>
 
 <template>
@@ -49,6 +61,14 @@ function handleClear(): void {
           label="清空"
           :disable="store.selectedCount === 0"
           @click="handleClear"
+        />
+        <q-btn
+          flat
+          color="secondary"
+          icon="save"
+          label="保存快照"
+          :disable="store.selectedCount === 0"
+          @click="handleSaveSnapshot"
         />
         <q-btn
           color="primary"

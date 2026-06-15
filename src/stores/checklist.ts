@@ -1,8 +1,26 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import teawareData from '@/mock/teaware.json'
 import presetData from '@/mock/presets.json'
-import type { TeawareGroup, TeawareItem, TeaPreset } from '@/types/teaware'
+import type { TeawareGroup, TeawareItem, TeaPreset, ChecklistSnapshot } from '@/types/teaware'
+
+const SNAPSHOT_STORAGE_KEY = 'tea-checklist-snapshots'
+
+function loadSnapshotsFromStorage(): ChecklistSnapshot[] {
+  try {
+    const stored = localStorage.getItem(SNAPSHOT_STORAGE_KEY)
+    if (stored) {
+      return JSON.parse(stored) as ChecklistSnapshot[]
+    }
+  } catch (e) {
+    console.warn('Failed to load snapshots from localStorage', e)
+  }
+  return []
+}
+
+function generateSnapshotId(): string {
+  return `snap_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+}
 
 /**
  * 一席茶清单状态：勾选器物、统计数量、按分类浏览。
@@ -11,6 +29,19 @@ export const useChecklistStore = defineStore('checklist', () => {
   const items = ref<TeawareItem[]>(teawareData as TeawareItem[])
   const selectedIds = ref<Set<string>>(new Set())
   const presets = ref<TeaPreset[]>(presetData as TeaPreset[])
+  const snapshots = ref<ChecklistSnapshot[]>(loadSnapshotsFromStorage())
+
+  watch(
+    snapshots,
+    (value) => {
+      try {
+        localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(value))
+      } catch (e) {
+        console.warn('Failed to save snapshots to localStorage', e)
+      }
+    },
+    { deep: true },
+  )
 
   /** 已选器物数量 */
   const selectedCount = computed(() => selectedIds.value.size)
@@ -76,6 +107,50 @@ export const useChecklistStore = defineStore('checklist', () => {
     selectedIds.value = new Set(preset.teawareIds)
   }
 
+  /** 快照数量 */
+  const snapshotCount = computed(() => snapshots.value.length)
+
+  /**
+   * 保存当前已选器物为快照。
+   * @returns 新创建的快照，若无已选器物则返回 null
+   */
+  function saveSnapshot(): ChecklistSnapshot | null {
+    if (selectedIds.value.size === 0) {
+      return null
+    }
+    const currentItems = selectedItems.value
+    const snapshot: ChecklistSnapshot = {
+      id: generateSnapshotId(),
+      timestamp: Date.now(),
+      teawareIds: Array.from(selectedIds.value),
+      teawareNames: currentItems.map((item) => item.name),
+    }
+    snapshots.value.unshift(snapshot)
+    return snapshot
+  }
+
+  /**
+   * 恢复指定快照的勾选状态。
+   * @param snapshotId - 快照 id
+   */
+  function restoreSnapshot(snapshotId: string): boolean {
+    const snapshot = snapshots.value.find((s) => s.id === snapshotId)
+    if (!snapshot) return false
+    selectedIds.value = new Set(snapshot.teawareIds)
+    return true
+  }
+
+  /**
+   * 删除指定快照。
+   * @param snapshotId - 快照 id
+   */
+  function deleteSnapshot(snapshotId: string): boolean {
+    const index = snapshots.value.findIndex((s) => s.id === snapshotId)
+    if (index === -1) return false
+    snapshots.value.splice(index, 1)
+    return true
+  }
+
   return {
     items,
     selectedIds,
@@ -84,9 +159,14 @@ export const useChecklistStore = defineStore('checklist', () => {
     groupedItems,
     categories,
     presets,
+    snapshots,
+    snapshotCount,
     toggleItem,
     isSelected,
     clearSelection,
     applyPreset,
+    saveSnapshot,
+    restoreSnapshot,
+    deleteSnapshot,
   }
 })

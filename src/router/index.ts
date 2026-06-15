@@ -40,6 +40,12 @@ const router = createRouter({
       component: () => import('@/pages/FavoritesPage.vue'),
       meta: { title: '我的收藏' },
     },
+    {
+      path: '/history',
+      name: 'history',
+      component: () => import('@/pages/HistoryPage.vue'),
+      meta: { title: '快照历史' },
+    },
   ],
 })
 
