@@ -31,6 +31,14 @@ function setCategory(category: string): void {
 function goToSession(): void {
   router.push('/session')
 }
+
+/**
+ * 前往茶器详情页
+ * @param id - 器物 id
+ */
+function goToDetail(id: string): void {
+  router.push({ name: 'teaware-detail', params: { id } })
+}
 </script>
 
 <template>
@@ -86,7 +94,8 @@ function goToSession(): void {
           :key="item.id"
           flat
           bordered
-          class="teaware-card"
+          class="teaware-card clickable-card"
+          @click="goToDetail(item.id)"
         >
           <q-img :src="item.image" :ratio="4 / 3" class="teaware-image">
             <div class="absolute-bottom text-subtitle2 teaware-image-label">
@@ -163,6 +172,10 @@ function goToSession(): void {
   &:hover {
     box-shadow: 0 4px 12px rgba(62, 39, 35, 0.12);
   }
+}
+
+.clickable-card {
+  cursor: pointer;
 }
 
 .teaware-image-label {

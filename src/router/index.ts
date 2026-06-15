@@ -15,6 +15,12 @@ const router = createRouter({
       component: () => import('@/pages/SessionPage.vue'),
       meta: { title: '一席茶清单' },
     },
+    {
+      path: '/teaware/:id',
+      name: 'teaware-detail',
+      component: () => import('@/pages/TeawareDetailPage.vue'),
+      meta: { title: '茶器详情' },
+    },
   ],
 })
 
