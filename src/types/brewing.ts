@@ -4,4 +4,5 @@ export interface BrewingStep {
   order: number
   title: string
   description: string
+  defaultDuration: number
 }

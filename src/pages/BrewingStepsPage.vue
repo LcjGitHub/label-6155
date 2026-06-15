@@ -1,15 +1,75 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
+import { useQuasar } from 'quasar'
 import brewingSteps from '@/mock/brewing-steps.json'
 import type { BrewingStep } from '@/types/brewing'
+
+const $q = useQuasar()
 
 const steps = computed<BrewingStep[]>(() => {
   return [...brewingSteps].sort((a, b) => a.order - b.order)
 })
 
+const activeStepId = ref<string | null>(null)
+const remainingSeconds = ref<number>(0)
+let timerInterval: number | null = null
+
 function getStepAriaLabel(step: BrewingStep): string {
   return `第${step.order}步，${step.title}。${step.description}`
 }
+
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+}
+
+function stopTimer(): void {
+  if (timerInterval) {
+    clearInterval(timerInterval)
+    timerInterval = null
+  }
+  activeStepId.value = null
+  remainingSeconds.value = 0
+}
+
+function startTimer(step: BrewingStep): void {
+  if (activeStepId.value === step.id) {
+    stopTimer()
+    return
+  }
+
+  if (activeStepId.value) {
+    stopTimer()
+  }
+
+  activeStepId.value = step.id
+  remainingSeconds.value = step.defaultDuration
+
+  timerInterval = window.setInterval(() => {
+    remainingSeconds.value--
+    if (remainingSeconds.value <= 0) {
+      stopTimer()
+      $q.dialog({
+        title: '计时结束',
+        message: `「${step.title}」步骤计时已完成，请进行下一步操作。`,
+        ok: '知道了',
+        persistent: true
+      })
+    }
+  }, 1000)
+}
+
+function getStepTimerStatus(step: BrewingStep): string {
+  if (activeStepId.value !== step.id) {
+    return `默认时长 ${formatTime(step.defaultDuration)}`
+  }
+  return `剩余 ${formatTime(remainingSeconds.value)}`
+}
+
+onUnmounted(() => {
+  stopTimer()
+})
 </script>
 
 <template>
@@ -40,6 +100,18 @@ function getStepAriaLabel(step: BrewingStep): string {
               <p class="step-desc text-body1 text-grey-7 q-mt-sm q-ma-none">
                 {{ step.description }}
               </p>
+              <div class="step-timer q-mt-md row items-center justify-between">
+                <span class="timer-display text-body2 text-grey-6">
+                  {{ getStepTimerStatus(step) }}
+                </span>
+                <q-btn
+                  :label="activeStepId === step.id ? '停止计时' : '开始计时'"
+                  :color="activeStepId === step.id ? 'negative' : 'primary'"
+                  size="sm"
+                  dense
+                  @click="startTimer(step)"
+                />
+              </div>
             </q-card-section>
           </q-card>
         </div>
@@ -120,5 +192,15 @@ function getStepAriaLabel(step: BrewingStep): string {
 
 .step-desc {
   line-height: 1.7;
+}
+
+.step-timer {
+  padding-top: 12px;
+  border-top: 1px solid rgba(93, 64, 55, 0.1);
+}
+
+.timer-display {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 </style>
