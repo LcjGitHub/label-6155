@@ -28,6 +28,12 @@ const router = createRouter({
       component: () => import('@/pages/PresetPage.vue'),
       meta: { title: '方案预设' },
     },
+    {
+      path: '/brewing',
+      name: 'brewing',
+      component: () => import('@/pages/BrewingStepsPage.vue'),
+      meta: { title: '泡茶步骤' },
+    },
   ],
 })
 
