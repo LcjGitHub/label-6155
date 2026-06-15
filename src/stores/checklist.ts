@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import teawareData from '@/mock/teaware.json'
 import presetData from '@/mock/presets.json'
-import type { TeawareGroup, TeawareItem, TeaPreset, ChecklistSnapshot } from '@/types/teaware'
+import type { TeawareItem, TeaPreset, ChecklistSnapshot } from '@/types/teaware'
+import { groupItemsByCategory } from '@/utils/teaware'
 
 const SELECTED_STORAGE_KEY = 'tea-checklist-selected'
 const SNAPSHOT_STORAGE_KEY = 'tea-checklist-snapshots'
@@ -105,18 +106,7 @@ export const useChecklistStore = defineStore('checklist', () => {
   )
 
   /** 全部器物按 category 分组 */
-  const groupedItems = computed<TeawareGroup[]>(() => {
-    const map = new Map<string, TeawareItem[]>()
-    for (const item of items.value) {
-      const group = map.get(item.category) ?? []
-      group.push(item)
-      map.set(item.category, group)
-    }
-    return Array.from(map.entries()).map(([category, groupItems]) => ({
-      category,
-      items: groupItems,
-    }))
-  })
+  const groupedItems = computed(() => groupItemsByCategory(items.value))
 
   /** 全部 category 列表（去重） */
   const categories = computed(() =>
@@ -142,19 +132,9 @@ export const useChecklistStore = defineStore('checklist', () => {
   /**
    * 按关键词过滤并按分类分组的器物列表。
    */
-  const groupedItemsByKeyword = computed<TeawareGroup[]>(() => {
-    const filteredItems = filterItemsByKeyword(searchKeyword.value)
-    const map = new Map<string, TeawareItem[]>()
-    for (const item of filteredItems) {
-      const group = map.get(item.category) ?? []
-      group.push(item)
-      map.set(item.category, group)
-    }
-    return Array.from(map.entries()).map(([category, groupItems]) => ({
-      category,
-      items: groupItems,
-    }))
-  })
+  const groupedItemsByKeyword = computed(() =>
+    groupItemsByCategory(filterItemsByKeyword(searchKeyword.value)),
+  )
 
   /**
    * 设置搜索关键词。

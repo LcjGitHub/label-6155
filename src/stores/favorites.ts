@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import teawareData from '@/mock/teaware.json'
-import type { TeawareItem, TeawareGroup } from '@/types/teaware'
+import type { TeawareItem } from '@/types/teaware'
+import { groupItemsByCategory } from '@/utils/teaware'
 
 const STORAGE_KEY = 'tea-favorites'
 
@@ -39,18 +40,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     items.value.filter((item) => favoriteIds.value.has(item.id)),
   )
 
-  const groupedFavorites = computed<TeawareGroup[]>(() => {
-    const map = new Map<string, TeawareItem[]>()
-    for (const item of favoriteItems.value) {
-      const group = map.get(item.category) ?? []
-      group.push(item)
-      map.set(item.category, group)
-    }
-    return Array.from(map.entries()).map(([category, groupItems]) => ({
-      category,
-      items: groupItems,
-    }))
-  })
+  const groupedFavorites = computed(() => groupItemsByCategory(favoriteItems.value))
 
   function toggleFavorite(id: string): void {
     const next = new Set(favoriteIds.value)
